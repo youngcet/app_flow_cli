@@ -24,8 +24,10 @@ It's perfect for bootstrapping projects with a clean, modular architecture — i
 ---
 
 <p align="center">
-  <img src="https://github.com/youngcet/app_flow_cli/blob/main/doc/defaultConfig.gif?raw=true" width="600px">
-  <img src="https://github.com/youngcet/app_flow_cli/blob/main/doc/customConfig.gif?raw=true" width="600px">
+    <h2>Using the default project structure</h2>
+  <img src="https://github.com/youngcet/app_flow_cli/blob/main/doc/defaultConfig.gif?raw=true" width="750px">
+  <h2>Using your own project structure config</h2>
+  <img src="https://github.com/youngcet/app_flow_cli/blob/main/doc/customConfig.gif?raw=true" width="750px" style="margin-left:10px">
 </p>
 
 ## ✨ Features
