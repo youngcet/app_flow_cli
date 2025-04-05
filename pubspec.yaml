@@ -1,0 +1,19 @@
+name: app_flow_cli
+description: AppFlow CLI is a Dart-based command-line tool designed to automate the creation, management, and cleanup of scalable Flutter project structures for a flutter project.
+version: 1.0.0
+repository: https://github.com/youngcet/app_flow_cli
+
+environment:
+  sdk: '>=2.19.5 <3.0.0'
+
+# dependencies:
+#   path: ^1.8.0
+
+dev_dependencies:
+  lints: ^2.0.0
+  test: ^1.21.0
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  console: ^4.1.0
