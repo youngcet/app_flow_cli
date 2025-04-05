@@ -23,6 +23,11 @@ It's perfect for bootstrapping projects with a clean, modular architecture — i
 
 ---
 
+<p align="center">
+  <img src="https://github.com/youngcet/app_flow_cli/blob/main/doc/defaultConfig.gif?raw=true" width="600px">
+  <img src="https://github.com/youngcet/app_flow_cli/blob/main/doc/customConfig.gif?raw=true" width="600px">
+</p>
+
 ## ✨ Features
 
 - 🚀 Generate folder/file structures using YAML config
@@ -41,6 +46,13 @@ Or install a specific version using:
 
 ```dart
 dart pub global activate app_flow_cli <version>
+```
+
+If you haven't already, you might need to [set up your path](https://dart.dev/tools/pub/cmd/pub-global#running-a-script-from-your-path).
+
+When that is not possible (eg: CI environments), run very_good commands via:
+```dart
+dart pub global run app_flow_cli [options] // e.g dart pub global run app_flow_cli --add structure
 ```
 
 # Usage
@@ -99,74 +111,56 @@ A basic config:
 
 ```yaml
 folders:
- - "lib/data"
- - "lib/data/models"
- - "lib/data/repositories"
- - "lib/data/services"
-
- - "lib/presentation"
- - "lib/presentation/screens"
- - "lib/presentation/widgets"
-
- - "lib/business"
- - "lib/business/cubit"
- - "lib/business/bloc"
-```
-
-A more complex config with files:
-```yaml
-folders:
   # Main application code
-  - "lib/src/app/             # App-wide configuration"
-  - "lib/src/app/config/      # Environment configurations (dev, staging, prod)"
-  - "lib/src/app/constants/   # App constants (strings, routes, enums)"
-  - "lib/src/app/di/          # Dependency injection setup"
-  - "lib/src/app/theme/       # App theme data"
+  - lib/src/app/             # App-wide configuration
+  - lib/src/app/config/      # Environment configurations (dev, staging, prod)"
+  - lib/src/app/constants/   # App constants (strings, routes, enums)"
+  - lib/src/app/di/          # Dependency injection setup"
+  - lib/src/app/theme/       # App theme data"
   
   # Core functionality
-  - "lib/src/core/            # Core functionality"
-  - "lib/src/core/errors/     # Error handling classes"
-  - "lib/src/core/network/    # Network clients and interceptors"
-  - "lib/src/core/utils/      # Utilities (validators, extensions, formatters)"
-  - "lib/src/core/widgets/    # Reusable app-wide widgets"
+  - lib/src/core/            # Core functionality"
+  - lib/src/core/errors/     # Error handling classes"
+  - lib/src/core/network/    # Network clients and interceptors"
+  - lib/src/core/utils/      # Utilities (validators, extensions, formatters)"
+  - lib/src/core/widgets/    # Reusable app-wide widgets"
   
   # Feature modules
-  - "lib/src/features/auth/        # Example feature: Authentication"
-  - "lib/src/features/auth/data/    # Data layer"
-  - "lib/src/features/auth/data/datasources/  # Local/remote data sources"
-  - "lib/src/features/auth/data/models/       # Data transfer objects"
-  - "lib/src/features/auth/data/repositories/ # Repository implementations"
-  - "lib/src/features/auth/domain/  # Domain layer"
-  - "lib/src/features/auth/domain/entities/     # Business logic entities"
-  - "lib/src/features/auth/domain/repositories/ # Repository interfaces"
-  - "lib/src/features/auth/domain/usecases/     # Business logic use cases"
-  - "lib/src/features/auth/presentation/    # UI layer"
-  - "lib/src/features/auth/presentation/bloc/        # State management"
-  - "lib/src/features/auth/presentation/pages/       # Full screens/views"
-  - "lib/src/features/auth/presentation/widgets/     # Feature-specific widgets"
+  - lib/src/features/auth/        # Example feature: Authentication"
+  - lib/src/features/auth/data/    # Data layer"
+  - lib/src/features/auth/data/datasources/  # Local/remote data sources"
+  - lib/src/features/auth/data/models/       # Data transfer objects"
+  - lib/src/features/auth/data/repositories/ # Repository implementations"
+  - lib/src/features/auth/domain/  # Domain layer"
+  - lib/src/features/auth/domain/entities/     # Business logic entities"
+  - lib/src/features/auth/domain/repositories/ # Repository interfaces"
+  - lib/src/features/auth/domain/usecases/     # Business logic use cases"
+  - lib/src/features/auth/presentation/    # UI layer"
+  - lib/src/features/auth/presentation/bloc/        # State management"
+  - lib/src/features/auth/presentation/pages/       # Full screens/views"
+  - lib/src/features/auth/presentation/widgets/     # Feature-specific widgets"
   
   # Routing configuration
-  - "lib/src/routes/          # Routing configuration"
+  - lib/src/routes/          # Routing configuration"
   
   # Localization
-  - "lib/l10n/                # Localization files"
+  - lib/l10n/                # Localization files"
   
   # Static files
-  - "assets/icons/               # App icons"
-  - "assets/images/              # Images"
-  - "assets/fonts/               # Custom fonts"
-  - "assets/translations/        # JSON translation files"
+  - assets/icons/               # App icons"
+  - assets/images/              # Images"
+  - assets/fonts/               # Custom fonts"
+  - assets/translations/        # JSON translation files"
   
   # Testing
-  - "test/                    # Test files"
-  - "test/features/            # Feature tests"
-  - "test/mock/                # Mock classes"
-  - "test/test_helpers/        # Testing utilities"
+  - test/                    # Test files"
+  - test/features/            # Feature tests"
+  - test/mock/                # Mock classes"
+  - test/test_helpers/        # Testing utilities"
   
   # Other
-  - "integration_test/        # Integration tests"
-  # - "web/                     # Web platform-specific code"
-  - "scripts/                 # Build/deployment scripts"
+  - integration_test/        # Integration tests"
+  - scripts/                 # Build/deployment scripts"
 
 files:   
   "lib/src/routes/app_pages.dart": |
