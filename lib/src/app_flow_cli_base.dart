@@ -345,7 +345,7 @@ files:
           MapEntry(e.key.toString(), e.value.toString()),
       ));
 
-      print('Adding ${folders.length + files.length} items...');
+      stderr.writeln('Adding ${folders.length + files.length} items...');
 
       await _createFolders(targetPath, folders);
       await _createFiles(targetPath, files, overwrite);
@@ -356,11 +356,11 @@ files:
       return;
     }
 
-    if (add == AppFlowConstants.comments){
-      String? filecontents = await _loadDartFileAsString('lib/features/home/presentation/home.dart');
-      print('filecontents: $filecontents');
-      return;
-    }
+    // if (add == AppFlowConstants.comments){
+    //   String? filecontents = await _loadDartFileAsString('lib/features/home/presentation/home.dart');
+    //   print('filecontents: $filecontents');
+    //   return;
+    // }
   }
 
   /// Parses the default embedded YAML configuration
@@ -409,7 +409,7 @@ files:
     String root,
     List<String> folders,
   ) async {
-    print('Creating ${folders.length} folders...');
+    stderr.writeln('Creating ${folders.length} folders...');
     var progress = ProgressBar();
     var i = 0;
     for (final folder in folders) {
@@ -431,7 +431,7 @@ files:
     Map<String, String> files,
     bool overwrite,
   ) async {
-    print('Creating ${files.length} files...');
+    stderr.writeln('Creating ${files.length} files...');
     var progress = ProgressBar();
     var i = 0;
     for (final entry in files.entries) {
@@ -465,7 +465,7 @@ files:
     if (externalConfig == null){
       totalitems += AppFlowConstants.additionFolders.length;
     }
-    print('Cleaning $totalitems items...');
+    stderr.writeln('Cleaning $totalitems items...');
 
     var progress = ProgressBar();
     var i = 0;
@@ -526,5 +526,40 @@ files:
       stderr.writeln('Error reading file $filePath: $e');
       return null;
     }
+  }
+
+  static Future<bool> generateOk()async{
+    bool filesGenerated = true;
+    final externalConfig = await _loadConfig(_defaultConfig);
+    final config = externalConfig ?? _parseDefaultConfig();
+
+    final folders = (config['folders'] as List).map((e) => e.toString()).toList();
+    final files = Map<String, String>.fromEntries(
+      (config['files'] as Map).entries.map((e) => 
+        MapEntry(e.key.toString(), e.value.toString()),
+    ));
+
+    for (final entry in files.entries){
+      String path = entry.key;
+      final file = File(path);
+      if (! await file.exists()) {
+        filesGenerated = false;
+        break;
+      }
+    }
+
+    folders.addAll(AppFlowConstants.additionFolders);
+    
+    if (filesGenerated){
+      for (final folder in folders){
+        final dir = Directory(folder);
+        if (! await dir.exists()){
+          filesGenerated = false;
+          break;
+        }
+      }
+    }
+
+    return filesGenerated;
   }
 }
