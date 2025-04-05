@@ -17,3 +17,9 @@ dependencies:
     sdk: flutter
   
   console: ^4.1.0
+  args: ^2.4.2
+  path: ^1.8.3
+  yaml: ^3.1.2
+
+executables:
+  app_flow_cli:

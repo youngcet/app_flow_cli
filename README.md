@@ -66,7 +66,7 @@ app_flow_cli --add structure
 ```
 
 <p align="left">
-  <img src="https://github.com/youngcet/app_flow_cli/blob/master/doc/structure.png?raw=true" style="width:400px">
+  <img src="https://github.com/youngcet/app_flow_cli/blob/main/doc/structure.png?raw=true" style="width:400px">
 </p>
 
 Removing the default structure.
