@@ -9,9 +9,9 @@
     <a href="https://app.codecov.io/gh/youngcet/app_flow_cli"><img src="https://img.shields.io/codecov/c/github/youngcet/app_flow_cli?logo=codecov&logoColor=white" alt="Coverage Status"></a>
 </p>
 
-# 🧱 AppFlow CLI – Flutter Project Structure Generator
+# 🧱 AppFlow CLI – Flutter Architecture Generator
 
-AppFlow CLI is a command-line tool built with Dart to help Flutter developers generate and manage scalable project structures using a simple configuration file.
+AppFlow CLI is a command-line tool built with Dart to help Flutter developers generate and manage scalable architecture using a simple configuration file.
 
 It's perfect for bootstrapping projects with a clean, modular architecture — ideal for solo devs and teams alike.
 
