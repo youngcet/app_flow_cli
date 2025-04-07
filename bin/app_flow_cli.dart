@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:app_flow_cli/app_flow_cli.dart';
 import 'package:app_flow_cli/src/constants.dart';
-import 'package:args/args.dart';
 
 /// --------------------------------------------
 /// AppFlow CLI Tool
@@ -33,29 +32,39 @@ import 'package:args/args.dart';
 ///
 /// --------------------------------------------
 
-void main(List<String> args) async {
+void main(List<String> arguments) async {
   final parser = AppFlowConstants.helpOptions;
 
+  if (arguments.isEmpty) {
+    print(parser.usage);
+    return;
+  }
+
   try {
-    final results = parser.parse(args);
-    
-    if (results['help'] as bool) {
-      print(parser.usage);
-      return;
-    }
+    final command = arguments.isNotEmpty ? arguments.first : null;
+    final results = parser.parse(arguments);
 
-    if (args.isEmpty){
-      print(parser.usage);
-      return;
-    }
-
-    await AppFlow.generate(
-      configPath: results['config'] as String,
-      add: results['add'] as String,
-      overwrite: results['overwrite'] as bool,
-      clean: results['clean'] as bool,
-    );
-  } catch (e) {
+    switch (command) {
+      case '--add':
+        AppFlow.add(results);
+        break;
+      case '--clean':
+        AppFlow.clean(results);
+        break;
+      case '--rm':
+        AppFlow.remove(results);
+        break;
+      case 'status':
+        AppFlow.status();
+        break;
+      case '--help':
+        print(parser.usage);
+        break;
+      default: 
+        print(parser.usage);
+        break;
+    } 
+  }catch (e) {
     stderr.writeln('Error: $e\n\n${parser.usage}');
     exitCode = 1;
   }
