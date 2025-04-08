@@ -1,10 +1,10 @@
 <p align="center">   
     <a href="https://github.com/youngcet/app_flow_cli"><img src="https://img.shields.io/github/stars/youngcet/app_flow_cli?style=social" alt="Repo stars"></a>
-    <a href="https://github.com/youngcet/app_flow_cli/commits/main"><img src="https://img.shields.io/github/last-commit/youngcet/app_flow_cli/master?logo=git" alt="Last Commit"></a>
+    <a href="https://github.com/youngcet/app_flow_cli/commits/main"><img src="https://img.shields.io/github/last-commit/youngcet/app_flow_cli/main?logo=git" alt="Last Commit"></a>
     <a href="https://github.com/youngcet/app_flow_cli/pulls"><img src="https://img.shields.io/github/issues-pr/youngcet/app_flow_cli" alt="Repo PRs"></a>
     <a href="https://github.com/youngcet/app_flow_cli/issues?q=is%3Aissue+is%3Aopen"><img src="https://img.shields.io/github/issues/youngcet/app_flow_cli" alt="Repo issues"></a>
     <a href="https://github.com/youngcet/app_flow_cli/graphs/contributors"><img src="https://badgen.net/github/contributors/youngcet/app_flow_cli" alt="Contributors"></a>
-    <a href="https://github.com/youngcet/app_flow_cli/blob/master/LICENSE"><img src="https://badgen.net/github/license/youngcet/app_flow_cli" alt="License"></a>
+    <a href="https://github.com/youngcet/app_flow_cli/blob/main/LICENSE"><img src="https://badgen.net/github/license/youngcet/app_flow_cli" alt="License"></a>
     <br>       
     <a href="https://app.codecov.io/gh/youngcet/app_flow_cli"><img src="https://img.shields.io/codecov/c/github/youngcet/app_flow_cli?logo=codecov&logoColor=white" alt="Coverage Status"></a>
 </p>
