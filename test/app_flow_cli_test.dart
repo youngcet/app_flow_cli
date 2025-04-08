@@ -6,10 +6,9 @@ void main() {
   group('CLI Tool Tests', () async {
     final parser = AppFlowConstants.helpOptions;
     final results = parser.parse(['--add', 'structure']);
-    await AppFlow.add(results);
 
-    setUp(() {
-      // Additional setup goes here.
+    setUp(() async {
+       await AppFlow.add(results);
     });
 
     bool statusOk = await AppFlow.generateOk();
