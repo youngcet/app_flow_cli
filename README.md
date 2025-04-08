@@ -1,6 +1,6 @@
 <p align="center">   
     <a href="https://github.com/youngcet/app_flow_cli"><img src="https://img.shields.io/github/stars/youngcet/app_flow_cli?style=social" alt="Repo stars"></a>
-    <a href="https://github.com/youngcet/app_flow_cli/commits/master"><img src="https://img.shields.io/github/last-commit/youngcet/app_flow_cli/master?logo=git" alt="Last Commit"></a>
+    <a href="https://github.com/youngcet/app_flow_cli/commits/main"><img src="https://img.shields.io/github/last-commit/youngcet/app_flow_cli/master?logo=git" alt="Last Commit"></a>
     <a href="https://github.com/youngcet/app_flow_cli/pulls"><img src="https://img.shields.io/github/issues-pr/youngcet/app_flow_cli" alt="Repo PRs"></a>
     <a href="https://github.com/youngcet/app_flow_cli/issues?q=is%3Aissue+is%3Aopen"><img src="https://img.shields.io/github/issues/youngcet/app_flow_cli" alt="Repo issues"></a>
     <a href="https://github.com/youngcet/app_flow_cli/graphs/contributors"><img src="https://badgen.net/github/contributors/youngcet/app_flow_cli" alt="Contributors"></a>
@@ -32,12 +32,22 @@ It's perfect for bootstrapping projects with a clean, modular architecture — i
 
 ## ✨ Features
 
-- 🚀 Generate folder/file structures using YAML config
-- ➕ Add new modules or features on demand
-- ♻️ Overwrite existing files with a flag
-- 🧹 Clean/remove previously generated structures
+- Generate folder/file structures using YAML config
+- Add new modules or features on demand
+- Overwrite existing files with a flag
+- Clean/remove previously generated structures
+- Generate custom boilerplate code
 
 ---
+
+## Use Case
+Ideal for:
+
+- Flutter developers following clean architecture, feature-based architecture, or layered architecture.
+
+- Teams wanting a consistent and fast way to set up project scaffolding.
+
+- Projects needing custom boilerplate generation.
 
 ## 📦 Installation
 ```dart
