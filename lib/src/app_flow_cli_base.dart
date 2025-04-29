@@ -881,4 +881,90 @@ files:
     return entries;
   }
 
+  static Future<void> workflow(options)async {
+    String? workflowOptions = options[AppFlowConstants.workflowRouteOption] as String;
+    String? config = options[AppFlowConstants.configOption];
+
+    if (config == null){
+      return Future.error('Error: Config file is missing');
+    }
+
+    Map<String, dynamic>? loadedConfig = await _loadConfig(config);
+    if (!loadedConfig!.containsKey('workflow')){
+      return Future.error('Error: Workflow parameter is missing from config.');
+    }
+
+    final optionsList = workflowOptions.split(':');
+    String workflow = optionsList[0];
+
+    if (! optionsList.asMap().containsKey(1))
+    {
+      return Future.error('Error: Workflow options missing from config.');
+    }
+
+    final opt = optionsList[1].split(',');
+
+    if (!loadedConfig['workflow'].containsKey(workflow)){
+      return Future.error('Error: $workflow is missing from config.');
+    }
+
+    final commands = (loadedConfig['workflow'][workflow] as List).map((e) => e.toString()).toList();
+    for (var command in commands){
+      for (var group in opt){
+        final pairs = group.split('=');
+
+        if (! pairs.asMap().containsKey(0) || ! pairs.asMap().containsKey(1)){
+          return Future.error('Error: Workflow options missing or incorrect format used.');
+        }
+        String key = pairs[0];
+        String value = pairs[1];
+        command = command.replaceAll('{$key}', value);
+      }
+      
+      if (workflow == 'git'){
+        await _runGitCommand(command);
+      }
+    }
+  }
+
+  static Future<void> _runBashCommand(String commandString) async {
+    stderr.writeln("Executing '$commandString'");
+    var result = await Process.run(
+      'cmd',
+      ['/c', commandString],
+    );
+
+    if (result.exitCode == 0) {
+      stderr.writeln('Output:\n${result.stdout}');
+    } else {
+      stderr.writeln('Error:\n${result.stderr}');
+    }
+  }
+
+  static Future<void> _runGitCommand(String commandString) async {
+    stderr.writeln("Executing 'git $commandString'");
+
+    List<String> args = _splitCommandKeepingQuotes(commandString);
+    var result = await Process.run('git', args);
+
+    if (result.exitCode == 0) {
+      print('Output:\n${result.stdout}');
+    } else {
+      print('Error:\n${result.stderr}');
+    }
+  }
+
+  static List<String> _splitCommandKeepingQuotes(String input) {
+    final regex = RegExp(r'''(?:[^\s"']+|"[^"]*"|'[^']*')+''');
+    final matches = regex.allMatches(input);
+
+    return matches.map((match) {
+      String matchStr = match.group(0)!;
+      if (matchStr.startsWith('"') && matchStr.endsWith('"') ||
+          matchStr.startsWith("'") && matchStr.endsWith("'")) {
+        return matchStr.substring(1, matchStr.length - 1);
+      }
+      return matchStr;
+    }).toList();
+  }
 }

@@ -37,7 +37,11 @@ class AppFlowConstants {
     )
     ..addOption(
       'make-route',
-      help: 'Automatically generates routes for new pages in --make-route <page> file',
+      help: 'Automatically generates routes for new pages in --make-route <router-file>',
+    )
+    ..addOption(
+      'workflow',
+      help: 'A structured process for managing project changes --workflow <name:key=value>',
     )
     ..addOption(
       'rm',
@@ -67,6 +71,7 @@ class AppFlowConstants {
   static String pageOption = 'page';
   static String removeOption = 'rm';
   static String makeRouteOption = 'make-route';
+  static String workflowRouteOption = 'workflow';
 
   static String version = '1.0.2+';
   static String trackingFileName = '.appflow_generated.json';
