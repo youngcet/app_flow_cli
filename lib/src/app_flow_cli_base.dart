@@ -416,6 +416,8 @@ files:
       if (await file.exists()) {
         final content = await file.readAsString();
         return _yamlToDart(loadYaml(content));
+      }else{
+        stderr.writeln('Config file [$path] does not exist.');
       }
     } catch (e) {
       stderr.writeln('Config Error: $e');
@@ -738,7 +740,17 @@ files:
     }
   }
 
-  /// Deletes a file or folder from the tracking file based on its path.
+  /// Deletes an entry from the tracking file based on a given [path].
+  ///
+  /// This function:
+  /// - Loads the tracking file defined by [AppFlowConstants.trackingFileName].
+  /// - Searches the list of tracked entries.
+  /// - Removes any entry that matches the [path] exactly or partially (contains the path substring).
+  /// - Writes the updated list back to the tracking file with pretty-printed JSON.
+  ///
+  /// This is useful when cleaning up entries that are no longer valid or needed.
+  ///
+  /// If the tracking file does not exist, the function silently exits.
   static Future<void> _deleteTrackedFile(String path) async{
     final file = File(AppFlowConstants.trackingFileName);
     if (await file.exists()) {
@@ -749,7 +761,23 @@ files:
     }
   }
 
-  /// Outputs a summary of all generated items (folders, files, overwrites) from the tracking file.
+  /// Displays the current status of generated project files and folders
+  /// based on the tracking file.
+  ///
+  /// This function:
+  /// - Reads the tracking file specified by [AppFlowConstants.trackingFileName].
+  /// - Parses and counts the total number of folders and files tracked.
+  /// - Identifies how many files were overwritten.
+  /// - Prints a formatted summary including the project name and version.
+  ///
+  /// If the tracking file does not exist, it reports an error.
+  ///
+  /// Output includes:
+  /// - 📁 Total generated folders
+  /// - 📄 Total generated files
+  /// - 📝 Number of files that were overwritten
+  ///
+  /// Useful for giving developers a quick summary after running CLI operations.
   static Future<void> status() async {
     final file = File(AppFlowConstants.trackingFileName);
     if (await file.exists()) {
@@ -783,7 +811,21 @@ files:
     }
   }
 
-  /// Main method to generate and update the route file with all screen pages.
+  /// Automatically updates the route file by injecting route definitions for 
+  /// newly found screen files ending in `_screen.dart`.
+  ///
+  /// This function:
+  /// - Gets the value passed to the `--make-route` option.
+  /// - Searches the project for untracked screen files.
+  /// - Loads the route file's content.
+  /// - Uses the [Route] class to generate new route definitions for each new screen.
+  /// - Updates and writes the route file with the modified content.
+  ///
+  /// The route file is only updated if new routes are detected and generated.
+  /// If no new screens are found, a message is printed instead.
+  ///
+  /// Throws:
+  ///   A [Future.error] if required files are missing or processing fails.
   static Future<void> makeRoute(dynamic options)async {
     String? routeFile = options[AppFlowConstants.makeRouteOption] as String;
     List<String> screenPages = await _searchScreenFiles('.');
@@ -805,7 +847,20 @@ files:
     stderr.writeln('No routes to update.');
   }
 
-  /// Searches for all screen files in the given directory that end with '_screen.dart'
+  /// Searches for all Dart files ending with '_screen.dart' in the given directory path,
+  /// excluding those already listed in the tracked files.
+  ///
+  /// This function reads the list of tracked files (from the tracking file),
+  /// then recursively scans the specified [directoryPath] for any files ending
+  /// in '_screen.dart' that are **not** already tracked.
+  ///
+  /// The file paths are normalized to use forward slashes and ensure consistent format.
+  ///
+  /// Returns:
+  ///   A [List<String>] containing untracked screen file paths.
+  ///
+  /// Throws:
+  ///   A [Future.error] if the specified directory does not exist.
   static Future<List<String>> _searchScreenFiles(String directoryPath) async {
     List<String> screenFiles = [];
     List<dynamic> trakcedFiles = await _getTrackedFiles();
@@ -840,7 +895,22 @@ files:
     return screenFiles;
   }
 
-  /// Returns the full path to a given file by searching recursively
+  /// Searches the current project directory recursively for a file by name 
+  /// and returns its full normalized path.
+  ///
+  /// This function attempts to locate the first occurrence of a file matching 
+  /// the given [file] string (a substring match). If found, the path is normalized:
+  /// - Removes `.\\`
+  /// - Converts backslashes to forward slashes
+  /// - Ensures `/lib/` appears as a prefix if within the `lib` folder
+  ///
+  /// If the file or directory doesn't exist, it returns an empty string or throws a [Future.error].
+  ///
+  /// Returns:
+  ///   A [String] representing the normalized full path to the file.
+  ///
+  /// Throws:
+  ///   A [Future.error] if the current directory does not exist.
   static Future<String> _getFullPathToFile(String file) async {
     String fullPath = '';
 
@@ -866,7 +936,18 @@ files:
     return fullPath;
   }
 
-  /// Loads and parses a tracking file which keeps a record of known screen files
+  /// Loads and returns the list of tracked files from the tracking JSON file.
+  ///
+  /// This function reads the contents of a JSON file specified by
+  /// [AppFlowConstants.trackingFileName] and parses it into a list of dynamic entries.
+  ///
+  /// If the file does not exist, it throws a [Future.error].
+  ///
+  /// Returns:
+  ///   A [List<dynamic>] of tracked entries from the tracking file.
+  ///
+  /// Throws:
+  ///   A [Future.error] if the tracking file is missing.
   static Future<List<dynamic>> _getTrackedFiles() async{
     final file = File(AppFlowConstants.trackingFileName);
     List<dynamic> entries = [];
@@ -881,6 +962,25 @@ files:
     return entries;
   }
 
+  /// Executes a defined workflow based on CLI options and configuration file.
+  ///
+  /// This function reads workflow-related options and a configuration file path
+  /// from the provided CLI `options` map. It supports executing a sequence of 
+  /// predefined commands for a specific workflow (e.g., 'git') defined in the config.
+  ///
+  /// The workflow string passed as an option should follow the format:
+  ///   <workflow>:<key1=value1,key2=value2,...>
+  /// 
+  /// It then replaces placeholders in the config-defined command templates (e.g. `{message}`) 
+  /// with values from the key-value pairs, and executes the resulting commands sequentially.
+  ///
+  /// Currently supports only the 'git' workflow. Future extensions can add support 
+  /// for additional workflows like 'flutter', 'bash', etc.
+  ///
+  /// Throws a [Future.error] if:
+  /// - The config file path is missing or invalid,
+  /// - The workflow or workflow options are not found or malformed,
+  /// - A key-value pair in the workflow options is incomplete.
   static Future<void> workflow(options)async {
     String? workflowOptions = options[AppFlowConstants.workflowRouteOption] as String;
     String? config = options[AppFlowConstants.configOption];
@@ -889,44 +989,53 @@ files:
       return Future.error('Error: Config file is missing');
     }
 
-    Map<String, dynamic>? loadedConfig = await _loadConfig(config);
-    if (!loadedConfig!.containsKey('workflow')){
-      return Future.error('Error: Workflow parameter is missing from config.');
-    }
+    try{
+      Map<String, dynamic>? loadedConfig = await _loadConfig(config);
+      if (!loadedConfig!.containsKey('workflow')){
+        return Future.error('Error: Workflow parameter is missing from config.');
+      }
 
-    final optionsList = workflowOptions.split(':');
-    String workflow = optionsList[0];
+      final optionsList = workflowOptions.split(':');
+      String workflow = optionsList[0];
 
-    if (! optionsList.asMap().containsKey(1))
-    {
-      return Future.error('Error: Workflow options missing from config.');
-    }
+      if (! optionsList.asMap().containsKey(1))
+      {
+        return Future.error('Error: Workflow options missing from config.');
+      }
 
-    final opt = optionsList[1].split(',');
+      final opt = optionsList[1].split(',');
 
-    if (!loadedConfig['workflow'].containsKey(workflow)){
-      return Future.error('Error: $workflow is missing from config.');
-    }
+      if (!loadedConfig['workflow'].containsKey(workflow)){
+        return Future.error('Error: $workflow is missing from config.');
+      }
 
-    final commands = (loadedConfig['workflow'][workflow] as List).map((e) => e.toString()).toList();
-    for (var command in commands){
-      for (var group in opt){
-        final pairs = group.split('=');
+      final commands = (loadedConfig['workflow'][workflow] as List).map((e) => e.toString()).toList();
+      for (var command in commands){
+        for (var group in opt){
+          final pairs = group.split('=');
 
-        if (! pairs.asMap().containsKey(0) || ! pairs.asMap().containsKey(1)){
-          return Future.error('Error: Workflow options missing or incorrect format used.');
+          if (! pairs.asMap().containsKey(0) || ! pairs.asMap().containsKey(1)){
+            return Future.error('Error: Workflow options missing or incorrect format used.');
+          }
+          String key = pairs[0];
+          String value = pairs[1];
+          command = command.replaceAll('{$key}', value);
         }
-        String key = pairs[0];
-        String value = pairs[1];
-        command = command.replaceAll('{$key}', value);
+        
+        if (workflow == 'git'){
+          await _runGitCommand(command);
+        }
       }
-      
-      if (workflow == 'git'){
-        await _runGitCommand(command);
-      }
-    }
+    }catch (e){
+      return Future.error('Error: $e');
+    }    
   }
 
+  /// Runs a shell command using Windows `cmd /c`.
+  ///
+  /// This is typically used for executing general bash-like commands on Windows.
+  /// It prints the command being executed and either the output or error
+  /// based on the exit code.
   static Future<void> _runBashCommand(String commandString) async {
     stderr.writeln("Executing '$commandString'");
     var result = await Process.run(
@@ -941,19 +1050,35 @@ files:
     }
   }
 
+  /// Executes a Git command passed as a string and prints the output.
+  ///
+  /// This function parses the input command string into arguments (preserving quoted parts),
+  /// executes the Git command using Dart's [Process.run], and prints both stdout and stderr.
+  /// It uses [Console] formatting to enhance visibility of command execution.
   static Future<void> _runGitCommand(String commandString) async {
-    stderr.writeln("Executing 'git $commandString'");
+    Console.init();
+    Console.setBold(true);
+    stdout.writeln("Executing 'git $commandString'");
+    Console.setBold(false);
 
     List<String> args = _splitCommandKeepingQuotes(commandString);
     var result = await Process.run('git', args);
-
+  
     if (result.exitCode == 0) {
-      print('Output:\n${result.stdout}');
+      stdout.writeln('Output:\n${result.stdout}');
+      stdout.writeln('${result.stderr}');
     } else {
-      print('Error:\n${result.stderr}');
+      stdout.writeln('Error:\n${result.stdout}');
     }
   }
 
+  /// Splits a shell-style command string into arguments while preserving quoted substrings.
+  ///
+  /// For example, converts:
+  ///   `commit -m "Initial commit"`
+  /// into:
+  ///   ['commit', '-m', 'Initial commit']
+  ///
   static List<String> _splitCommandKeepingQuotes(String input) {
     final regex = RegExp(r'''(?:[^\s"']+|"[^"]*"|'[^']*')+''');
     final matches = regex.allMatches(input);
