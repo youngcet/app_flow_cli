@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 import 'package:app_flow_cli/src/app_flow_cli_route.dart';
 import 'package:app_flow_cli/src/constants.dart';
@@ -998,8 +997,7 @@ files:
       final optionsList = workflowOptions.split(':');
       String workflow = optionsList[0];
 
-      if (! optionsList.asMap().containsKey(1))
-      {
+      if (! optionsList.asMap().containsKey(1)){
         return Future.error('Error: Workflow options missing from config.');
       }
 

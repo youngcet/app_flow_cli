@@ -37,6 +37,7 @@ It's perfect for bootstrapping projects with a clean, modular architecture — i
 - Overwrite existing files with a flag
 - Clean/remove previously generated structures
 - Generate custom boilerplate code
+- Route management
 
 ---
 
@@ -224,7 +225,7 @@ This will create a new `auth` directory inside the `lib/features` folder, and re
 app_flow_cli --add features:auth,product
 ```
 
-This command will create both `auth` and `product` directories inside lib/features, each following the project's predefined structure.
+This command will create both `auth` and `product` directories inside `lib/features`, each following the project's predefined structure.
 
 ## Removing directories in `lib`
 To remove directory, run:
@@ -245,7 +246,7 @@ app_flow_cli --make-route router.dart
 
 Scans the project for all Dart files ending with _screen.dart (excluding already tracked files), and automatically generates route entries for them in the provided `<file>` (e.g. router.dart *without the path). If the route file already exists, it updates it by injecting the new routes. 
 
-## Workflows
+## Git Workflows
 **`--workflow <options>`** this tool allows you to execute a sequence of predefined `git` commands based on a configuration file and dynamic key-value inputs. For example:
 
 ```dart 
