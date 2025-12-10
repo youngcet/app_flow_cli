@@ -55,6 +55,12 @@ void main(List<String> arguments) async {
       case 'status':
         AppFlow.status();
         break;
+      case '--make-route':
+        AppFlow.makeRoute(results);
+        break;
+      case '--workflow':
+        AppFlow.workflow(results);
+        break;
       case '--help':
         print(parser.usage);
         break;

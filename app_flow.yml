@@ -82,3 +82,11 @@ files:
     # Project documentation
     ## My Flutter App
     A developer community application.
+
+screens: "presentation/" # UI presentation screens, used for auto-generating UI files when adding features
+
+workflow:
+  git: 
+    - add .
+    - commit -m "{message}"
+    - push
