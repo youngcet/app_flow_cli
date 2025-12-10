@@ -81,4 +81,6 @@ class AppFlowConstants {
   static String appflowConstants = '// <appflow-constants>';
 
   static String appflowRouteRegex = "// <appflow-start:route>(.|\n)*?//<appflow-end:route>";
+
+  static List<String> gitInitCommands = ['init', 'remote add origin {remote_url}', 'branch -M main'];
 }

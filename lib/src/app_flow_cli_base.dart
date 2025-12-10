@@ -416,10 +416,10 @@ files:
         final content = await file.readAsString();
         return _yamlToDart(loadYaml(content));
       }else{
-        stderr.writeln('Config file [$path] does not exist.');
+        stderr.writeln('[INFO] Project config file not found.');
       }
     } catch (e) {
-      stderr.writeln('Config Error: $e');
+      stderr.writeln('[ERROR] $e');
     }
     return null;
   }
@@ -888,7 +888,7 @@ files:
         }
       }
     } catch (e) {
-      stderr.writeln('Error: $e');
+      stderr.writeln('[ERROR] $e');
     }
 
     return screenFiles;
@@ -929,7 +929,7 @@ files:
         }
       }
     } catch (e) {
-      stderr.writeln('Error: $e');
+      stderr.writeln('[ERROR] $e');
     }
 
     return fullPath;
@@ -955,7 +955,7 @@ files:
       final content = await file.readAsString();
       entries = jsonDecode(content);
     }else{
-      return Future.error('Error: Tracking file is missing');
+      return Future.error('[ERROR] Tracking file is missing');
     }
 
     return entries;
@@ -983,28 +983,32 @@ files:
   static Future<void> workflow(options)async {
     String? workflowOptions = options[AppFlowConstants.workflowRouteOption] as String;
     String? config = options[AppFlowConstants.configOption];
-
+    
     if (config == null){
-      return Future.error('Error: Config file is missing');
+      return Future.error('[ERROR] Config file is missing');
     }
 
     try{
       Map<String, dynamic>? loadedConfig = await _loadConfig(config);
+      if (loadedConfig == null){
+        return Future.error('[ERROR] Config/Workflow is missing.');
+      }
+
       if (!loadedConfig!.containsKey('workflow')){
-        return Future.error('Error: Workflow parameter is missing from config.');
+        return Future.error('[ERROR] Workflow parameter is missing from config.');
       }
 
       final optionsList = workflowOptions.split(':');
       String workflow = optionsList[0];
 
       if (! optionsList.asMap().containsKey(1)){
-        return Future.error('Error: Workflow options missing from config.');
+        return Future.error('[ERROR] Workflow options missing from config.');
       }
 
       final opt = optionsList[1].split(',');
 
       if (!loadedConfig['workflow'].containsKey(workflow)){
-        return Future.error('Error: $workflow is missing from config.');
+        return Future.error('[ERROR] $workflow is missing from config.');
       }
 
       final commands = (loadedConfig['workflow'][workflow] as List).map((e) => e.toString()).toList();
@@ -1013,20 +1017,47 @@ files:
           final pairs = group.split('=');
 
           if (! pairs.asMap().containsKey(0) || ! pairs.asMap().containsKey(1)){
-            return Future.error('Error: Workflow options missing or incorrect format used.');
+            return Future.error('[ERROR] Workflow options missing or incorrect format used.');
           }
           String key = pairs[0];
           String value = pairs[1];
           command = command.replaceAll('{$key}', value);
         }
+
+        command = command.replaceAll('{files}', '.');
         
         if (workflow == 'git'){
-          await _runGitCommand(command);
+          bool isGitRepo = _isGitRepo();
+          if (isGitRepo){
+            await _runGitCommand(command);
+          }else{
+            stderr.writeln('[INFO] Git repo not found.');
+            String initGit = await readInput('Create a new repository (y/n): ');
+            if (initGit.toLowerCase() == 'y'){
+              String gitRemoteUrl = await readInput('Your git remote url: ');
+              if (gitRemoteUrl.isEmpty) return;
+              
+              for (var cmd in AppFlowConstants.gitInitCommands){
+                cmd = cmd.replaceAll('{remote_url}', gitRemoteUrl);
+                await _runGitCommand(cmd);
+              }
+              stderr.writeln('[INFO] Git repo created. You can now continue executing your git workflow.');
+              return;
+            }else{
+              return;
+            }
+          }
         }
       }
     }catch (e){
-      return Future.error('Error: $e');
+      return Future.error('[ERROR] $e');
     }    
+  }
+
+  /// check if git repo is present
+  static bool _isGitRepo() {
+    final gitDir = Directory('.git');
+    return gitDir.existsSync();
   }
 
   /// Runs a shell command using Windows `cmd /c`.
@@ -1044,7 +1075,7 @@ files:
     if (result.exitCode == 0) {
       stderr.writeln('Output:\n${result.stdout}');
     } else {
-      stderr.writeln('Error:\n${result.stderr}');
+      stderr.writeln('[ERROR]\n${result.stderr}');
     }
   }
 
@@ -1066,7 +1097,7 @@ files:
       stdout.writeln('Output:\n${result.stdout}');
       stdout.writeln('${result.stderr}');
     } else {
-      stdout.writeln('Error:\n${result.stdout}');
+      stdout.writeln('[ERROR]\n${result.stdout}');
     }
   }
 
